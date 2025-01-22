@@ -17,7 +17,7 @@ namespace LanguageInstall.Service.Service
     public interface ILocalizationService
     {
         string GetLocalizedString(string key, string languageCode);
-        Task<string> GetTranslationAsync(string key, string languageCode);
+        Task<string> GetTranslationAsync(string code, string key, string languageCode);
         Task<List<string>> GetLang();
     }
 
@@ -65,19 +65,35 @@ namespace LanguageInstall.Service.Service
 
             return translation?.TranslatedText ?? mainEntry.EnglishText; // Return translation or fallback to English
         }
-        public async Task<string> GetTranslationAsync(string key, string languageCode)
+        public async Task<string> GetTranslationAsync(string code, string key, string languageCode)
         {
             var mainEntry = await _context.MainTables
                 .Include(m => m.Translations)
-                .FirstOrDefaultAsync(m => m.EnglishText == key);
+                .FirstOrDefaultAsync(m => /* m.EnglishText == key || */ m.TextCode == code);
 
             if (mainEntry == null)
             {
-                var Id =  await SaveToDatabase(key);
+                var Id =  await SaveToDatabase(key, code);
                 await InstallLocal(key, Id);
                 
                // return key;
-            } 
+            }
+            else
+            {
+                if (mainEntry.EnglishText != key)
+                {
+                   var a = EditLabel(code, key);
+                    if (!a)
+                    {
+                        return key;
+                    }
+                    //TODO: add to translate tablr
+                    //await InstallLocal(key);
+                }
+            }
+
+            
+
 
             var translation = mainEntry?.Translations.FirstOrDefault(t => t.LanguageCode == languageCode);
 
@@ -86,12 +102,25 @@ namespace LanguageInstall.Service.Service
             return translation?.TranslatedText ?? key; // Fallback to English text
         }
 
-       
+        private bool EditLabel(string code, string key)
+        {
+            var exists = _context.MainTables.Where(e=>e.TextCode == code).FirstOrDefault();
+            if (exists != null)
+            {
+                exists.EnglishText = key;
+                _context.Update(exists);
+                _context.SaveChanges();
 
-        private async Task< int> SaveToDatabase(string key)
+                return true;
+            }
+            return false;
+        }
+
+        private async Task< int> SaveToDatabase(string key, string code)
         {
             MainTable mainTable = new MainTable()
             {
+                TextCode = code,
                 EnglishText = key
             };
             _context.Add(mainTable);

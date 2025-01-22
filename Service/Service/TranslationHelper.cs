@@ -10,10 +10,10 @@ namespace LanguageInstall.Service.Service
 {
     public static class TranslationHelper
     {
-        public static string Translate(string key, HttpContext context, ILocalizationService service)
+        public static string Translate(string code, string key, HttpContext context, ILocalizationService service)
         {
             var languageCode = context.Items["Language"] as string ?? "en";
-            return service.GetTranslationAsync(key, languageCode).Result;
+            return service.GetTranslationAsync(code , key, languageCode).Result;
         }
     }
 }

@@ -2,8 +2,8 @@
 @inject LanguageInstall.Service.Service.ILocalizationService TranslationService 
 
 @functions {
-    public async Task<string> TranslateAsync(string key, string languageCode)
+    public async Task<string> TranslateAsync(string code ,string key, string languageCode)
     {
-        return await TranslationService.GetTranslationAsync(key, languageCode);
+        return await TranslationService.GetTranslationAsync(code , key, languageCode);
     }
 }
