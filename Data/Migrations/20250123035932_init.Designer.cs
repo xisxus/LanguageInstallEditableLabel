@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LanguageInstall.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250122142048_textCode1")]
-    partial class textCode1
+    [Migration("20250123035932_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,6 +59,7 @@ namespace LanguageInstall.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TextCode")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");

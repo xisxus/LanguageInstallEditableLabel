@@ -15,7 +15,7 @@ namespace LanguageInstall.Service.Service
     public interface ITranslateOperation
     {
         Task<List<int>> OperationMultiLanguage(string key, IQueryable<string> distinctTranslationCodes, int id);
-        Task<int> OperationSINGLELanguageUpdate(string key, string distinctTranslationCodes, int id, int Pkey);
+        Task<int> OperationSINGLELanguageUpdate(string key, string langCode, int MainTid, int Pkey);
     }
 
     public class TranslateOperation : ITranslateOperation
@@ -93,7 +93,7 @@ namespace LanguageInstall.Service.Service
 
         }
 
-        public async Task<int> OperationSINGLELanguageUpdate(string key, string distinctTranslationCodes, int id, int Pkey)
+        public async Task<int> OperationSINGLELanguageUpdate(string key, string langCode, int MainTid, int Pkey)
         {
             int sleepTime = 1000;
 
@@ -113,7 +113,7 @@ namespace LanguageInstall.Service.Service
 
                     //var a = translateWebOperation(key, langugeCode);
                    
-                        string url = $"https://translate.google.com/?hl=en&sl=en&tl={distinctTranslationCodes}&op=translate";
+                        string url = $"https://translate.google.com/?hl=en&sl=en&tl={langCode}&op=translate";
                         driver.Navigate().GoToUrl(url);
 
                         Thread.Sleep(sleepTime);
@@ -136,8 +136,8 @@ namespace LanguageInstall.Service.Service
                     if (existingTranslation != null)
                     {
                         // Update the existing entity's properties
-                        existingTranslation.MainTableID = id;
-                        existingTranslation.LanguageCode = distinctTranslationCodes;
+                        existingTranslation.MainTableID = MainTid;
+                        existingTranslation.LanguageCode = langCode;
                         existingTranslation.TranslatedText = result;
 
                         // Mark the entity as modified
@@ -149,8 +149,8 @@ namespace LanguageInstall.Service.Service
                         var translation = new Translation
                         {
                             ID = Pkey,
-                            MainTableID = id,
-                            LanguageCode = distinctTranslationCodes,
+                            MainTableID = MainTid,
+                            LanguageCode = langCode,
                             TranslatedText = result
                         };
 

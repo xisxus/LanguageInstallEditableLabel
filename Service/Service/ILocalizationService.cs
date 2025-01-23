@@ -87,8 +87,9 @@ namespace LanguageInstall.Service.Service
                     {
                         return key;
                     }
+                  
                     //TODO: add to translate tablr
-                    //await InstallLocal(key);
+                    await InstallLocalNEdit(key, mainEntry);
                 }
             }
 
@@ -101,6 +102,31 @@ namespace LanguageInstall.Service.Service
 
             return translation?.TranslatedText ?? key; // Fallback to English text
         }
+
+        private async Task<bool> InstallLocalNEdit(string key, MainTable mainEntry)
+        {
+            //var distinctTranslationCodes = _context.Translation
+            //   .Select(trans => trans.LanguageCode)
+            //   .Distinct();
+
+            //if (distinctTranslationCodes.Any())
+            //{
+            //   // await TranslateOperationNedit(key, distinctTranslationCodes);
+            //}
+
+            if (mainEntry.Translations.Any())
+            {
+                foreach (var translationTable in mainEntry.Translations)
+                {
+                    await _translateOperation.OperationSINGLELanguageUpdate(key, translationTable.LanguageCode, translationTable.MainTableID, translationTable.ID); //TranslateOperationNedit(key, translationTable);
+                }
+            }
+
+            return true;
+            
+        }
+
+        
 
         private bool EditLabel(string code, string key)
         {

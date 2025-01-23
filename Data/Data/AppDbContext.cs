@@ -22,18 +22,18 @@ namespace LanguageInstall.Data.Data
         public DbSet<Notification> Notifications { get; set; }
 
 
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    base.OnModelCreating(modelBuilder); 
-        //    // Seed data from static class
-        //    modelBuilder.Entity<MainTable>().HasData(SeedData.MainTables.ToArray());
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            // Seed data from static class
+            //modelBuilder.Entity<MainTable>().HasData(SeedData.MainTables.ToArray());
 
-        //    modelBuilder.Entity<Translation>().HasData(SeedData.Translations.ToArray());
-        //    modelBuilder.Entity<LanguageList>().HasData(SeedData.LanguageLists.ToArray());
+            //modelBuilder.Entity<Translation>().HasData(SeedData.Translations.ToArray());
+            modelBuilder.Entity<LanguageList>().HasData(SeedData.LanguageLists.ToArray());
 
-        //}
+        }
 
-              
+
     }
 
 }
